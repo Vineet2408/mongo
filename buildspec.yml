@@ -12,7 +12,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the docker image
-      - docker-compose up
+      - docker-compose up -d
       - docker tag REPOSITORY_URI:latest $ REPOSITORY_URI"$IMAGE_TAG
   post_build:
     commands:
