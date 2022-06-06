@@ -20,8 +20,7 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo Pushing the docker images
-      - docker push $REPOSITORY_URI:latest
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker push 161452358598.dkr.ecr.us-west-2.amazonaws.com/tweetapp-registery-1
       - echo Writing images definitions file...
       - printf '[{"name":"mongo-service","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
