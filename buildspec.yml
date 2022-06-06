@@ -25,6 +25,6 @@ phases:
       - echo Writing images definitions file...
       - printf '[{"name":"mongo-service","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
-  artifacts:
-    files:
-     - imagedefinitions.json
+artifacts:
+  files:
+   - imagedefinitions.json
