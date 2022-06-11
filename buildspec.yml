@@ -1,41 +1,30 @@
-version 0.2
+version: 0.2
 
 phases:
-  pre-build:
+  pre_build:
     commands:
-      - echo Logging into amazon ECR
+      - echo Logging in to Amazon ECR
       - aws --version
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION
-      - REPOSITORY_URI=161452358598.dkr.ecr.us-east-1.amazonaws.com/tweetapp-springboot
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID |awk -F":" '{print $2}')
-
-  install:
-    runtime-versions:
-      java: openjdk:11
-
+      - REPOSITORY_URI=161452358598.dkr.ecr.us-west-2.amazonaws.com/tweetapp-registery-1
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      
   build:
     commands:
-      - echo creating jar of project
-      - mvn clean install
-      - echo jar created on `date`
-      - echo starting docker process
       - echo Build started on `date`
-      - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URI:latest .
-      - docker tag $REPOSITORY_URI:latest $RESPOSITORY_URI:$IMAGE_TAG
-
+      - echo Building the docker image
+      - docker pull mongo:4.2
+      - docker tag mongo:4.2 161452358598.dkr.ecr.us-west-2.amazonaws.com/tweetapp-registery-1
   post_build:
     commands:
-      - echo Build completed successfully on `date`
-      - echo Pushing the Docker images...
+      - echo Build completed on `date`
+      - echo Pushing the docker images
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo Writing image definitions file...
-      - printf '[{"name":"cicd-container","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinition.json
+      - echo Writing images definitions file...
+      - printf '[{"name":"mongo-service","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
-
 artifacts:
   files:
-    - imagedefinition.json
-    - target/tweetapp-data-api.jar
+   - imagedefinitions.json
